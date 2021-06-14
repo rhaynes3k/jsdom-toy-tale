@@ -22,11 +22,11 @@ function postObj(name, image){
   console.log('Name', name)
   console.log('Image', image)
   event.preventDefault()
-  let toyObject = {
-    name: name.value,
-    image: image.value
-  }
-  console.log('toy object', toyObject)
+  // let toyObject = {
+  //   name: name.value,
+  //   image: image.value
+  // }
+  // console.log('toy object', toyObject)
 
   fetch('http://localhost:3000/toys',
   {
@@ -35,7 +35,11 @@ function postObj(name, image){
       ContentType: 'application/json',
       Accept: 'application/json'
     },
-    body: JSON.stringify(toyObject)
+    body: JSON.stringify({
+      'name': name.value,
+      'image': image.value,
+      'likes': 0
+    })
   })
     .then(response => response.json())
     .then(response => {
