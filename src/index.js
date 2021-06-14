@@ -12,20 +12,21 @@ function getToyz(){
 document.getElementsByClassName('submit')[0].addEventListener('click', () => {
   //debugger
   console.log(event.target)
-  let name = document.getElementsByTagName('input')[0].value
-  let image = document.getElementsByTagName('input')[1].value
+  let name = document.getElementsByTagName('input')[0]
+  let image = document.getElementsByTagName('input')[1]
   postObj(name, image)
   console.log('clicked')
 })
 
 function postObj(name, image){
-  console.log(name, image)
+  console.log('Name', name)
+  console.log('Image', image)
   event.preventDefault()
   let toyObject = {
-    name: name,
-    image: image
+    name: name.value,
+    image: image.value
   }
-  console.log(toyObject)
+  console.log('toy object', toyObject)
 
   fetch('http://localhost:3000/toys',
   {
@@ -38,7 +39,7 @@ function postObj(name, image){
   })
     .then(response => response.json())
     .then(response => {
-    console.log(response)
+    console.log('Resp', response)
     })
     .catch(function(error) {
     alert("WHOA!");
