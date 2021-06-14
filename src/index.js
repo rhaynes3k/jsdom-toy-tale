@@ -8,21 +8,43 @@ function getToyz(){
     resp.forEach(toyCards)
   })
 }
-let postObj = {
-  method: 'POST',
-  headers: {
-    ContentType: 'application/json',
-    Accept: 'application/json'
-  },
-  body: JSON.stringify({
-    name: 'input.name',
-    image: 'input.image'
+
+document.getElementsByClassName('submit')[0].addEventListener('click', () => {
+  //debugger
+  console.log(event.target)
+  let name = document.getElementsByTagName('input')[0].value
+  let image = document.getElementsByTagName('input')[1].value
+  postObj(name, image)
+  console.log('clicked')
+})
+
+function postObj(name, image){
+  console.log(name, image)
+  event.preventDefault()
+  let toyObject = {
+    name: name,
+    image: image
+  }
+  console.log(toyObject)
+
+  fetch('http://localhost:3000/toys',
+  {
+    method: 'POST',
+    headers: {
+      ContentType: 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify(toyObject)
+  })
+    .then(response => response.json())
+    .then(response => {
+    console.log(response)
+    })
+    .catch(function(error) {
+    alert("WHOA!");
+    console.log(error);
   })
 }
-document.getElementsByClassName('submit')[0].addEventListener('click', () =>{
-  fetch('http://localhost:3000/toys', postObj)
-  console.log(event)
-})
 
 function toyCards(t) {
   let likes = document.createElement('p')
