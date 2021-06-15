@@ -4,50 +4,42 @@ function getToyz(){
   fetch('http://localhost:3000/toys')
   .then(resp => resp.json())
   .then(function(resp){
-    // console.log(resp)
     resp.forEach(toyCards)
   })
 }
 
 document.getElementsByClassName('submit')[0].addEventListener('click', () => {
-  //debugger
-  console.log(event.target)
   let name = document.getElementsByTagName('input')[0]
   let image = document.getElementsByTagName('input')[1]
   postObj(name, image)
-  console.log('clicked')
 })
 
 function postObj(name, image){
-  console.log('Name', name)
-  console.log('Image', image)
   event.preventDefault()
-  // let toyObject = {
-  //   name: name.value,
-  //   image: image.value
-  // }
-  // console.log('toy object', toyObject)
+  let toyObject = {
+    name: name.value,
+    image: image.value
+  }
 
   fetch('http://localhost:3000/toys',
   {
     method: 'POST',
     headers: {
-      ContentType: 'application/json',
+      'Content-Type': 'application/json',
       Accept: 'application/json'
     },
     body: JSON.stringify({
-      'name': name.value,
-      'image': image.value,
-      'likes': 0
+      'name': toyObject.name,
+      'image': toyObject.image,
+      'likes': 0,
     })
   })
     .then(response => response.json())
     .then(response => {
-    console.log('Resp', response)
+      toyCards(response)
     })
     .catch(function(error) {
     alert("WHOA!");
-    console.log(error);
   })
 }
 
@@ -62,17 +54,40 @@ function toyCards(t) {
   let toyCard = document.createElement('div')
   toyCard.className = 'card'
   toyCard.innerHTML += `
-    <h2>${t.name}</h2>
+      <h2>${t.name}</h2>
 
-  `
+    `
   toyCard.appendChild(img)
   likes.innerHTML = `${t.likes} Likes`
   toyCard.appendChild(likes)
   toyCard.appendChild(button)
-  document.getElementById('toy-collection').appendChild(toyCard)
-  // console.log(toyCard)
-}
 
+  button.addEventListener('click', (event) => {
+    let likeCount = event.target.parentElement.children[2].innerHTML = parseInt(event.target.parentElement.children[2].innerHTML) + 1
+    likeCount
+
+    fetch('http://localhost:3000/toys/'+`${t.id}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        'likes': likeCount
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        likes.innerHTML = response.likes + ' ' + 'Likes'
+        console.log(response.likes)
+      })
+      .catch(function(error) {
+      alert("WHOA!");
+    })
+  })
+  document.getElementById('toy-collection').appendChild(toyCard)
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   getToyz()
